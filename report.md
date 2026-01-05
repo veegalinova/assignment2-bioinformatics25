@@ -123,7 +123,7 @@ These genes are highly concentrated within relatively small genomic regions on c
 
 To further assess the relationship between the identified SCNA regions and Factor 2, I computed pairwise Spearman correlations between mean SCNA values in the chromosome 3 and chromosome 17 regions, Factor 2 values, and survival time (Table 3).
 
-| Correlation Pair                        | Spearman ρ | p-value    |
+| Correlation Pair                        | Spearman r | p-value    |
 |-----------------------------------------|------------|------------|
 | Chr3 mean vs Chr17 mean                | 0.3230     | 0.0002007  |
 | Chr3 mean vs survival time             | -0.0679    | 0.4463     |
@@ -295,7 +295,7 @@ Mapping these SCNA loadings to genomic coordinates revealed two distinct regions
 
 To assess whether these regions are directly associated with survival or primarily reflect latent variation captured by Factor 8, I computed Spearman correlations between regional SCNA means, Factor 8 values, and survival time.
 
-| Correlation Pair             | Spearman ρ | p-value    |
+| Correlation Pair             | Spearman r | p-value    |
 |------------------------------|:----------:|:----------:|
 | Chr3 mean vs Chr12 mean          | 0.3000     | 0.0005821  |
 | Chr3 mean vs survival time            | -0.0674    | 0.4495     |
