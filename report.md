@@ -1,31 +1,52 @@
-# Explaratory analysis of multi-modal integration using MOFA
+# Exploratory Analysis of Multi-Modal Integration Using MOFA
+
 ## Table of Contents
+- [Exploratory Analysis of Multi-Modal Integration Using MOFA](#exploratory-analysis-of-multi-modal-integration-using-mofa)
+  - [Table of Contents](#table-of-contents)
+  - [1. Motivation and Scope](#1-motivation-and-scope)
+    - [1.1 Project Motivation and Goal](#11-project-motivation-and-goal)
+    - [1.2 Selected Data Modalities](#12-selected-data-modalities)
+  - [2. Key Results](#2-key-results)
+    - [2.1 MOFA Model Summary](#21-mofa-model-summary)
+    - [2.2 Association of Latent Factors with Survival](#22-association-of-latent-factors-with-survival)
+      - [2.2.1 Survival Analysis Using MOFA Factors](#221-survival-analysis-using-mofa-factors)
+  - [3. Interpretation of Selected Factors](#3-interpretation-of-selected-factors)
+    - [3.1 Interpretation of Factor 2](#31-interpretation-of-factor-2)
+      - [3.1.1 Modality Contribution and Loading Structure](#311-modality-contribution-and-loading-structure)
+      - [3.1.2 Identification of Genomic Regions Associated with SCNA Signal](#312-identification-of-genomic-regions-associated-with-scna-signal)
+      - [3.1.3 Functional Characterization of mRNA and Proteome Signals with gProfiler](#313-functional-characterization-of-mrna-and-proteome-signals-with-gprofiler)
+    - [3.2 Interpretation of Factor 8](#32-interpretation-of-factor-8)
+      - [3.2.1 Modality Contribution and SCNA Structure](#321-modality-contribution-and-scna-structure)
+      - [3.2.2 Relationship Between SCNA Regions, Factor 8, and Survival](#322-relationship-between-scna-regions-factor-8-and-survival)
+      - [3.2.3 Functional Characterization of mRNA and Proteomic Signals](#323-functional-characterization-of-mrna-and-proteomic-signals)
+  - [4. Methods: Data Preprocessing and Model Training](#4-methods-data-preprocessing-and-model-training)
+    - [4.1 Clinical Data Preprocessing](#41-clinical-data-preprocessing)
+    - [4.2 Omics Data Preprocessing](#42-omics-data-preprocessing)
+    - [4.3 MOFA Model Training](#43-mofa-model-training)
 
-## 1. Motivation and scope
+## 1. Motivation and Scope
 
-### 1.1 Project motivation and goal
+### 1.1 Project Motivation and Goal
 The goal of this analysis is to integrate multiple data modalities from a PDAC dataset using MOFA, identify latent factors, and explore whether these factors capture biological signals associated with clinical outcomes. The analysis is purely exploratory and intended for hypothesis generation.
 
-### 1.2 Selected data modalities 
-The modalities availiable in the assignment were: clinical data, circRNA, miRNA, mRNA, posphoproteome, proteome, SCNA. 
+### 1.2 Selected Data Modalities 
+The modalities available in the assignment were: clinical data, circRNA, miRNA, mRNA, phosphoproteome, proteome, and SCNA. 
 
-For this analysis, I wanted to reduce the number of modalities to allow easier intepretation, so I selected clinical data, mRNA, proteome and SCNA: 
-- clinical data - main source of outcome labels, essential for analysis
-- mRNA - gene expression, often used in analyses, expected to have a strong assosiation with prognosis 
-- proteome - protein abundance per gene, captures pathway activation and disease state, gives information about which proteins/signaling pathways are up in high-risk patients  
-- SCNA - Somatic Copy Number Alterations per gene, represet genomic structural changes (e.g., oncogene amplification, tumor suppressor deletion), can drive both mRNA and protein changes
+For this analysis, I reduced the number of modalities to allow easier interpretation, selecting clinical data, mRNA, proteome, and SCNA: 
+- Clinical data - main source of outcome labels, essential for analysis
+- mRNA - gene expression, commonly used in prognostic analyses
+- Proteome - protein abundance per gene, captures pathway activation and disease state, provides information about which proteins/signaling pathways are upregulated in high-risk patients  
+- SCNA - Somatic Copy Number Alterations per gene, represent genomic structural changes (e.g., oncogene amplification, tumor suppressor deletion), can drive both mRNA and protein changes
 
-The information about preprocessing of the data is in later section "SECTION HERE"
-
-
-## 2. Key results
+Details about data preprocessing are provided in Section 4.
 
 
-### 2.1 MOFA model summary
-I used 3 modalities to train MOFA model - mRNA, proteome and SCNA. This was done so that MOFA learns driving "biology" for each factor, and later I can correlate the factors with survival from clinical data. I setup the model with 10 factors, and after trainig it produced 8 final factors. The training code can be found in this notebook:
-TODO: LINK TO TRAINING NOTEBOOK HERE
+## 2. Key Results
 
-Some analysis of the resulting factors (I used MOFAx package and the [official tutorial](https://github.com/bioFAM/mofax/blob/master/notebooks/getting_started_pbmc10k.ipynb) to analyze the model):
+### 2.1 MOFA Model Summary
+I used three modalities to train the MOFA model: mRNA, proteome, and SCNA. This approach allows MOFA to learn the underlying biological drivers for each factor, which can then be correlated with survival outcomes from clinical data. The model was initialized with 10 factors and converged to 8 final factors after training. The training code can be found in the `3_train_mofa.ipynb` notebook.
+
+Analysis of the resulting factors was performed using the MOFAx package, following the [official tutorial](https://github.com/bioFAM/mofax/blob/master/notebooks/getting_started_pbmc10k.ipynb):
 
 <p align="center">
   <img src="plots/variance_explained.png" alt="Variance explained per factor and per modality" />
@@ -33,15 +54,15 @@ Some analysis of the resulting factors (I used MOFAx package and the [official t
   <b>Figure 1.</b> Variance explained per factor and per modality.
 </p>
 
-Takeaways:
-  1. Different factors and driven by different modalities, e.g. Factor 1 is driven by mRNA and Factor 3 is driven by SCNA. 
-  2. Most factors show variance explained by multiple modalities, meaning that biological signals are shared across data types
+Key observations:
+  1. Different factors are driven by different modalities, e.g., Factor 1 is primarily driven by mRNA and Factor 3 is primarily driven by SCNA. 
+  2. Most factors show variance explained by multiple modalities, indicating that biological signals are shared across data types.
 
-### 2.2 Association of latent factors with survival
+### 2.2 Association of Latent Factors with Survival
 
-#### 2.1.1 Survival analysis using MOFA factors
+#### 2.2.1 Survival Analysis Using MOFA Factors
 
-To identify latent factors potentially relevant to clinical outcome, I calculated association between each MOFA factor and overall survival using Cox proportional hazards models. Each factor was tested individually using its sample-level factor values.
+To identify latent factors potentially relevant to clinical outcome, I calculated the association between each MOFA factor and overall survival using Cox proportional hazards models. Each factor was tested individually using its sample-level factor values.
 
 | Factor   |    HR    |   Coef    |  P-value  |
 |----------|----------|-----------|-----------|
@@ -55,35 +76,35 @@ To identify latent factors potentially relevant to clinical outcome, I calculate
 | Factor5  | 1.006285 |  0.006265 | 0.957607  |
 <p align="center"><b>Table 1.</b> Association between MOFA factors and survival.</p>
 
-Factors 2, 8 and 4 show nominally significant associations with survival (p < 0.05).
-Factor 2 is associated with improved survival (negative coefficient), and Factors 8 and 4 are associated with worse prognosis (positive coefficients). 
-I selected factors 2 and 8 for downstream interpretation, as they show opposite associations with survival and should represent contrasting biological states. 
+Factors 2, 8, and 4 show nominally significant associations with survival (p < 0.05).
+Factor 2 is associated with improved survival (negative coefficient), while Factors 8 and 4 are associated with worse prognosis (positive coefficients). 
+Factors 2 and 8 were selected for downstream interpretation, as they show opposite associations with survival and likely represent contrasting biological states. 
 
-## 3. Interpretation of selected factors
+## 3. Interpretation of Selected Factors
 
 ### 3.1 Interpretation of Factor 2 
 
-#### 3.1.1 Modality contribution and loading structure
+#### 3.1.1 Modality Contribution and Loading Structure
 
-Factor 2 variance is primarily explained by mRNA modality, which also has the largest number of non-zero future loadings (Figure 3). Proteomic loadings are more symmetrically distributed around zero, while SCNA loadings are sparse but display a pronounced negative peak (Figure 4).
+Factor 2 variance is primarily explained by the mRNA modality, which also has the largest number of non-zero feature loadings (Figure 2). Proteomic loadings are more symmetrically distributed around zero, while SCNA loadings are sparse but display a pronounced negative peak (Figure 3).
 
-This suggests that Factor 2 captures transcriptional variation, with some genomic alterations shown in SCNA modality.
+This suggests that Factor 2 captures transcriptional variation, with some genomic alterations reflected in the SCNA modality.
 
 <p align="center">
   <img src="plots/factor2_modality_variance_and_nonzero.png" alt="Variance explained per modality and number of non-zero loadings for Factor 2." />
   <br>
-  <b>Figure 3.</b>Variance explained per modality and number of non-zero loadings for Factor 2.
+  <b>Figure 2.</b> Variance explained per modality and number of non-zero loadings for Factor 2.
 </p>
 
 <p align="center">
   <img src="plots/factor2_loading_distributions.png" alt="Distribution of feature loadings for Factor 2 across modalities." />
   <br>
-  <b>Figure 4.</b>Distribution of feature loadings for Factor 2 across modalities.
+  <b>Figure 3.</b> Distribution of feature loadings for Factor 2 across modalities.
 </p>
 
-#### 3.1.2 Identification of genomic regions associated with SCNA signal
+#### 3.1.2 Identification of Genomic Regions Associated with SCNA Signal
 
-To investigate whether the negative SCNA loading peak corresponds to localized genomic events, I looked at the genomic positions of genes within the lowest 5% of SCNA loadings using the `mygene` annotation package.
+To investigate whether the negative SCNA loading peak corresponds to localized genomic events, I examined the genomic positions of genes within the lowest 5% of SCNA loadings using the `mygene` annotation package.
 
 | Chromosome | Gene count |
 |------------|------------------|
@@ -92,12 +113,12 @@ To investigate whether the negative SCNA loading peak corresponds to localized g
 
 <p align="center"><b>Table 2.</b> Chromosomal distribution of genes with lowest SCNA loadings.</p>
 
-These genes are highly concentrated within relatively small genomic regions on chromosomes 3 and 17, spanning 17 Mb and 1.41 Mb respectively (Figure 5), suggesting the presence of recurrent copy number alterations.
+These genes are highly concentrated within relatively small genomic regions on chromosomes 3 and 17, spanning 17 Mb and 1.41 Mb respectively (Figure 4), suggesting the presence of recurrent copy number alterations.
 
 <p align="center">
   <img src="plots/chr3_chr17_genomic_startpos_distribution.png" alt="Genomic start position distributions of negatively weighted SCNA genes on chromosomes 3 and 17." />
   <br>
-  <b>Figure 5.</b>Genomic start position distributions of negatively weighted SCNA genes on chromosomes 3 and 17.
+  <b>Figure 4.</b> Genomic start position distributions of negatively weighted SCNA genes on chromosomes 3 and 17.
 </p>
 
 To further assess the relationship between the identified SCNA regions and Factor 2, I computed pairwise Spearman correlations between mean SCNA values in the chromosome 3 and chromosome 17 regions, Factor 2 values, and survival time (Table 3).
@@ -110,22 +131,22 @@ To further assess the relationship between the identified SCNA regions and Facto
 | Factor 2 vs Chr3 mean                  | -0.2304    | 0.008877   |
 | Factor 2 vs Chr17 mean                 | -0.2960    | 0.000693   |
 
-<p align="center"><b>Table 3. </b>Spearman correlations between regional SCNA values, Factor 2, and survival time.</p>
+<p align="center"><b>Table 3.</b> Spearman correlations between regional SCNA values, Factor 2, and survival time.</p>
 
-Mean SCNA values in the chromosome 3 and chromosome 17 regions are correlated with each other. Importantly, Factor 2 shows significant negative correlations with SCNA means in both regions, indicating that this latent factor captures variation in these genomic alterations. Only chromosome 17 shows an association with survival time, but Factor 2 is strongly correlated with both regions, meaning that it integrated multiple SCNA signals.
+Mean SCNA values in the chromosome 3 and chromosome 17 regions are correlated with each other. Importantly, Factor 2 shows significant negative correlations with SCNA means in both regions, indicating that this latent factor captures variation in these genomic alterations. While only chromosome 17 shows a direct association with survival time, Factor 2 is strongly correlated with both regions. This suggests that the factor integrates multiple coordinated SCNA signals.
 
-#### 3.1.3 Functional characterization of mRNA and proteome signals with gProfiler 
-Inspection of MOFA weights within the identified chromosomal regions shows negative loadings for chromosome 17 (Figure 6), consistent with the direction of association observed in the survival analysis.
+#### 3.1.3 Functional Characterization of mRNA and Proteome Signals with gProfiler 
+Inspection of MOFA weights within the identified chromosomal regions shows negative loadings for chromosome 17 (Figure 5), consistent with the direction of association observed in the survival analysis.
 
 <p align="center">
   <img src="plots/chr3_chr17_weight_distribution_in_hypothesis_region.png" alt="Distribution of MOFA weights within the chromosome 3 and 17 regions." />
   <br>
-  <b>Figure 6. </b>Distribution of MOFA weights within the chromosome 3 and 17 regions.
+  <b>Figure 5.</b> Distribution of MOFA weights within the chromosome 3 and 17 regions.
 </p>
 
 To functionally characterize this signal, I performed pathway enrichment analysis using g:Profiler on the 100 most negatively weighted mRNA features associated with Factor 2.
 
-Enriched pathways are predominantly related to cytokine signaling, inflammatory response, and immune cell migration (Table 4), suggesting that lower expression of inflammatory and immune-related genes is associated with improved survival in this factor.
+The enriched pathways are predominantly related to cytokine signaling, inflammatory response, and immune cell migration (Table 4), suggesting that lower expression of inflammatory and immune-related genes is associated with improved survival.
 
 <p align="center">
 
@@ -246,32 +267,31 @@ A similar analysis of the 50 most negatively weighted proteomic features reveale
 
 Together, these results suggest that Factor 2 captures a biological state characterized by reduced inflammatory signaling and lower proliferative activity, which is associated with improved patient survival. 
 
-Important observation is that enrichment results depend strongly on the selected feature cutoff, so they are only hypotheses. 
+An important caveat is that enrichment results depend strongly on the selected feature cutoff and should be interpreted as hypotheses for further validation. 
 
-## 3.2 Interpretation of Factor 8 
+### 3.2 Interpretation of Factor 8 
 
 To contrast with Factor 2, I performed the same exploratory analysis for Factor 8, which showed a significant association with worse survival in the Cox regression analysis.
 
-### 3.2.1 Modality contribution and SCNA structure
+#### 3.2.1 Modality Contribution and SCNA Structure
 
-TODO: wrong
-Factor 8 shows substantial contribution from the SCNA modality, with a bimodal distribution of SCNA loadings (Figure 8). One peak corresponds to positively weighted features, while the second corresponds to negatively weighted features.
+Factor 8 shows substantial contribution from the SCNA modality, with a bimodal distribution of SCNA loadings (Figure 7). One peak corresponds to positively weighted features, while the other corresponds to negatively weighted features.
 
 <p align="center">
-  <img src="plots/factor8_variance_nonzero.png" alt="" />
+  <img src="plots/factor8_variance_nonzero.png" alt="Variance explained per modality and number of non-zero loadings for Factor 8." />
   <br>
-  <b>Figure 7. </b>Variance explained per modality and number of non-zero loadings for Factor 8.
+  <b>Figure 6.</b> Variance explained per modality and number of non-zero loadings for Factor 8.
 </p>
 
 <p align="center">
-  <img src="plots/factor8_loading_distributions.png" alt="" />
+  <img src="plots/factor8_loading_distributions.png" alt="Distribution of feature loadings for Factor 8 across modalities." />
   <br>
-  <b>Figure 8. </b>Distribution of feature loadings for Factor 8 across modalities.
+  <b>Figure 7.</b> Distribution of feature loadings for Factor 8 across modalities.
 </p>
 
 Mapping these SCNA loadings to genomic coordinates revealed two distinct regions: positively weighted genes cluster on chromosome 3 (spanning approximately 28.9 Mb), while negatively weighted genes cluster on chromosome 12 (spanning approximately 13.3 Mb).
 
-### 3.2.2 Relationship between SCNA regions, Factor 8, and survival
+#### 3.2.2 Relationship Between SCNA Regions, Factor 8, and Survival
 
 To assess whether these regions are directly associated with survival or primarily reflect latent variation captured by Factor 8, I computed Spearman correlations between regional SCNA means, Factor 8 values, and survival time.
 
@@ -281,16 +301,16 @@ To assess whether these regions are directly associated with survival or primari
 | Chr3 mean vs survival time            | -0.0674    | 0.4495     |
 | Chr12 mean vs survival time           | -0.0277    | 0.7564     |
 | Factor 8 vs Chr3 mean           | 0.2734     | 0.001796   |
-| Factor 8 vs Chr3 mean           | -0.0556    | 0.5331     | 
-<p align="center"><b>Table 6. </b>Spearman correlations between regional SCNA values, Factor 8, and survival time.</p> 
+| Factor 8 vs Chr12 mean           | -0.0556    | 0.5331     | 
+<p align="center"><b>Table 6.</b> Spearman correlations between regional SCNA values, Factor 8, and survival time.</p> 
 
 The two SCNA regions show moderate correlation with each other. Neither region is directly associated with survival time. Only the chromosome 3 region shows a significant correlation with Factor 8.
 
-### 3.2.3 Functional characterization of mRNA and proteomic signals
+#### 3.2.3 Functional Characterization of mRNA and Proteomic Signals
 
 Given the lack of direct association between regional SCNA values and survival, downstream functional interpretation focused on transcriptional and proteomic signals positively associated with Factor 8. 
 
-Pathway enrichment analysis of the top 500 positively weighted mRNA features revealed enrichment for epidermis and skin development–related processes (Table 7), suggesting involvement of epithelial differentiation programs.
+Pathway enrichment analysis of the top 500 positively weighted mRNA features revealed enrichment for epidermis and skin development-related processes (Table 7), suggesting involvement of epithelial differentiation programs.
 
 <p align="center">
 
@@ -380,51 +400,56 @@ Enrichment analysis of the top 300 positively weighted proteomic features showed
 </table>
 <p align="center"><b>Table 8.</b> Enriched pathways for positively weighted proteomic features in Factor 8.</p>
 
-Together, these results suggest that Factor 8 captures a biological program characterized by extracellular matrix remodeling and epithelial-associated processes, which is associated with poorer survival outcomes.
+Factor 8 appears to capture a biological program characterized by extracellular matrix remodeling and epithelial-associated processes, which is associated with poorer survival outcomes.
 
-## 4. Methods: data preprocessing and model training
+## 4. Methods: Data Preprocessing and Model Training
 
-### 4.1 Clinical data preprocessing 
+### 4.1 Clinical Data Preprocessing 
 
 Clinical data were used only for downstream association analyses and were not included in MOFA training. Patients with missing values in follow-up time, vital status, or pathological tumor stage were excluded. All remaining patients were retained for survival analysis.
 
-### 4.2 Omics data preprocessing
-All omics preprocessing steps were performed before MOFA training. TODO: (link to preprocessing notebook).
+### 4.2 Omics Data Preprocessing
+All omics preprocessing steps were performed before MOFA training (see `2_omics_data_preprocessing.ipynb`).
 
-Only samples present across all selected modalities were left in, resulting in a matched multi-modal dataset.
+Only samples present across all selected modalities were retained, resulting in a matched multi-modal dataset.
 
-1. mRNA
-The mRNA expression data appeared to be pre-normalized, with no missing values and expression ranges between 0 and 22. 
+**1. mRNA**
+
+The mRNA expression data appeared to be pre-normalized, with no missing values and expression values ranging between 0 and 22. 
 Preprocessing steps included:
 - Selection of the top 1,500 genes by variance
 - Z-score normalization across samples for each gene
-2. Proteome 
+
+**2. Proteome**
+
 Proteomic data contained substantial missingness, with observed values ranging between 12 and 33. 
 The following preprocessing steps were applied:
 - Removal of proteins detected in fewer than 30% of samples
 - Imputation of missing values using a protein-wise minimum-based approach (imputed values set below the observed minimum for each protein)
 - Z-score normalization across samples for each protein
-3. SCNA 
+
+**3. SCNA**
+
 SCNA data contained some missing values and ranged from -2 to 2. Preprocessing steps included:
 - Imputation of missing values with zeros
 - Selection of the top 3,000 genes by variance
 - Z-score normalization across samples for each gene
   
-### 4.3 MOFA model training
+### 4.3 MOFA Model Training
 
 MOFA was trained using the mRNA, proteome, and SCNA modalities. 
 The prepared data matrix consisted of 137 matched samples across all views:
-View 0 (mRNA): 137 × 1,500
-View 1 (Proteome): 137 × 9,644
-View 2 (SCNA): 137 × 3,000
+- View 0 (mRNA): 137 × 1,500
+- View 1 (Proteome): 137 × 9,644
+- View 2 (SCNA): 137 × 3,000
 
-The model was initialized with 10 latent factors and sparse feature weights. Training parameters are summarized below (see training notebook for full details):
-Number of factors: 10
-Sparse spike-and-slab feature weights enabled
-Automatic relevance determination (ARD) enabled
-Maximum iterations: 1,000
-Convergence mode: medium
-Factor pruning threshold: variance explained < 0.1%
-Random seed: 42
+The model was initialized with 10 latent factors and sparse feature weights. Training parameters are summarized below (see `3_train_mofa.ipynb` for full details):
+- Number of factors: 10
+- Sparse spike-and-slab feature weights enabled
+- Automatic relevance determination (ARD) enabled
+- Maximum iterations: 1,000
+- Convergence mode: medium
+- Factor pruning threshold: variance explained < 0.1%
+- Random seed: 42
 
 Model training converged and resulted in 8 latent factors retained for downstream analysis.
