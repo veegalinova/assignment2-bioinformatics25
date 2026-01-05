@@ -64,6 +64,8 @@ Key observations:
 
 To identify latent factors potentially relevant to clinical outcome, I calculated the association between each MOFA factor and overall survival using Cox proportional hazards models. Each factor was tested individually using its sample-level factor values.
 
+<div align="center">
+
 | Factor   |    HR    |   Coef    |  P-value  |
 |----------|----------|-----------|-----------|
 | Factor2  | 0.753896 | -0.282500 | 0.002358  |
@@ -74,6 +76,8 @@ To identify latent factors potentially relevant to clinical outcome, I calculate
 | Factor7  | 1.025310 |  0.024995 | 0.858935  |
 | Factor1  | 1.006422 |  0.006402 | 0.915671  |
 | Factor5  | 1.006285 |  0.006265 | 0.957607  |
+
+</div>
 <p align="center"><b>Table 1.</b> Association between MOFA factors and survival.</p>
 
 Factors 2, 8, and 4 show nominally significant associations with survival (p < 0.05).
@@ -106,11 +110,14 @@ This suggests that Factor 2 captures transcriptional variation, with some genomi
 
 To investigate whether the negative SCNA loading peak corresponds to localized genomic events, I examined the genomic positions of genes within the lowest 5% of SCNA loadings using the `mygene` annotation package.
 
-| Chromosome | Gene count |
-|------------|------------------|
-| 3          | 61               |
-| 17         | 46               |
+<div align="center">
 
+| Chromosome | Gene count |
+|------------|------------|
+| 3          | 61         |
+| 17         | 46         |
+
+</div>
 <p align="center"><b>Table 2.</b> Chromosomal distribution of genes with lowest SCNA loadings.</p>
 
 These genes are highly concentrated within relatively small genomic regions on chromosomes 3 and 17, spanning 17 Mb and 1.41 Mb respectively (Figure 4), suggesting the presence of recurrent copy number alterations.
@@ -123,6 +130,8 @@ These genes are highly concentrated within relatively small genomic regions on c
 
 To further assess the relationship between the identified SCNA regions and Factor 2, I computed pairwise Spearman correlations between mean SCNA values in the chromosome 3 and chromosome 17 regions, Factor 2 values, and survival time (Table 3).
 
+<div align="center">
+
 | Correlation Pair                        | Spearman r | p-value    |
 |-----------------------------------------|------------|------------|
 | Chr3 mean vs Chr17 mean                | 0.3230     | 0.0002007  |
@@ -131,6 +140,7 @@ To further assess the relationship between the identified SCNA regions and Facto
 | Factor 2 vs Chr3 mean                  | -0.2304    | 0.008877   |
 | Factor 2 vs Chr17 mean                 | -0.2960    | 0.000693   |
 
+</div>
 <p align="center"><b>Table 3.</b> Spearman correlations between regional SCNA values, Factor 2, and survival time.</p>
 
 Mean SCNA values in the chromosome 3 and chromosome 17 regions are correlated with each other. Importantly, Factor 2 shows significant negative correlations with SCNA means in both regions, indicating that this latent factor captures variation in these genomic alterations. While only chromosome 17 shows a direct association with survival time, Factor 2 is strongly correlated with both regions. This suggests that the factor integrates multiple coordinated SCNA signals.
@@ -149,7 +159,6 @@ To functionally characterize this signal, I performed pathway enrichment analysi
 The enriched pathways are predominantly related to cytokine signaling, inflammatory response, and immune cell migration (Table 4), suggesting that lower expression of inflammatory and immune-related genes is associated with improved survival.
 
 <p align="center">
-
 <table>
   <tr>
     <th>Source</th>
@@ -224,15 +233,13 @@ The enriched pathways are predominantly related to cytokine signaling, inflammat
     <td>10</td>
   </tr>
 </table>
-
 <br>
 <b>Table 4.</b> Significantly enriched pathways for negatively weighted mRNA features in Factor 2.
 </p>
 
 A similar analysis of the 50 most negatively weighted proteomic features revealed enrichment for DNA replication, cell cycle regulation, and DNA damage response pathways (Table 5).
 
-<div align="center">
-
+<p align="center">
 <table>
   <thead>
     <tr>
@@ -260,10 +267,8 @@ A similar analysis of the 50 most negatively weighted proteomic features reveale
     <tr><td>REAC</td><td>Orc1 removal from chromatin</td><td>2.563355e-02</td><td>6</td></tr>
   </tbody>
 </table>
-
-
 <b>Table 5.</b> Enriched pathways for negatively weighted proteomic features in Factor 2.
-</div>
+</p>
 
 Together, these results suggest that Factor 2 captures a biological state characterized by reduced inflammatory signaling and lower proliferative activity, which is associated with improved patient survival. 
 
@@ -275,7 +280,7 @@ To contrast with Factor 2, I performed the same exploratory analysis for Factor 
 
 #### 3.2.1 Modality Contribution and SCNA Structure
 
-Factor 8 shows substantial contribution from the proteome modality. SCNA loadings (Figure 7) have several peaks. I analyzed one peak that corresponds t most positively weighted features, and the other corresponds to most negatively weighted features.
+Factor 8 is primarily driven by contributions from the proteome modality. The SCNA loadings (Figure 7) display several peaks. I analyzed one peak corresponding to the most positively weighted features and another peak aligning with the most negatively weighted features.
 
 <p align="center">
   <img src="plots/factor8_variance_nonzero.png" alt="Variance explained per modality and number of non-zero loadings for Factor 8." />
@@ -295,13 +300,22 @@ Mapping these SCNA loadings to genomic coordinates revealed two distinct regions
 
 To assess whether these regions are directly associated with survival or primarily reflect latent variation captured by Factor 8, I computed Spearman correlations between regional SCNA means, Factor 8 values, and survival time.
 
+<div align="center">
+
+<p align="center">
+
 | Correlation Pair             | Spearman r | p-value    |
 |------------------------------|:----------:|:----------:|
-| Chr3 mean vs Chr12 mean          | 0.3000     | 0.0005821  |
-| Chr3 mean vs survival time            | -0.0674    | 0.4495     |
-| Chr12 mean vs survival time           | -0.0277    | 0.7564     |
-| Factor 8 vs Chr3 mean           | 0.2734     | 0.001796   |
-| Factor 8 vs Chr12 mean           | -0.0556    | 0.5331     | 
+| Chr3 mean vs Chr12 mean      | 0.3000     | 0.0005821  |
+| Chr3 mean vs survival time   | -0.0674    | 0.4495     |
+| Chr12 mean vs survival time  | -0.0277    | 0.7564     |
+| Factor 8 vs Chr3 mean        | 0.2734     | 0.001796   |
+| Factor 8 vs Chr12 mean       | -0.0556    | 0.5331     |
+
+</p>
+
+
+</div>
 <p align="center"><b>Table 6.</b> Spearman correlations between regional SCNA values, Factor 8, and survival time.</p> 
 
 The two SCNA regions show moderate correlation with each other. Neither region is directly associated with survival time. Only the chromosome 3 region shows a significant correlation with Factor 8.
@@ -313,7 +327,6 @@ Given the lack of direct association between regional SCNA values and survival, 
 Pathway enrichment analysis of the top 500 positively weighted mRNA features revealed enrichment for epidermis and skin development-related processes (Table 7), suggesting involvement of epithelial differentiation programs.
 
 <p align="center">
-
 <table>
   <thead>
     <tr>
@@ -338,12 +351,12 @@ Pathway enrichment analysis of the top 500 positively weighted mRNA features rev
     </tr>
   </tbody>
 </table>
-
 <b>Table 7.</b> Enriched biological processes for positively weighted mRNA features in Factor 8.
 </p>
 
 Enrichment analysis of the top 300 positively weighted proteomic features showed strong enrichment for extracellular matrix organization and collagen-related pathways (Table 8), including collagen biosynthesis and fibril organization.
 
+<p align="center">
 <table>
   <thead>
     <tr>
@@ -398,7 +411,8 @@ Enrichment analysis of the top 300 positively weighted proteomic features showed
     </tr>
   </tbody>
 </table>
-<p align="center"><b>Table 8.</b> Enriched pathways for positively weighted proteomic features in Factor 8.</p>
+<b>Table 8.</b> Enriched pathways for positively weighted proteomic features in Factor 8.
+</p>
 
 Factor 8 appears to capture a biological program characterized by extracellular matrix remodeling and epithelial-associated processes, which is associated with poorer survival outcomes.
 
@@ -406,7 +420,7 @@ Factor 8 appears to capture a biological program characterized by extracellular 
 
 ### 4.1 Clinical Data Preprocessing 
 
-Clinical data were used only for downstream association analyses and were not included in MOFA training. Patients with missing values in follow-up time, vital status, or pathological tumor stage were excluded. All remaining patients were retained for survival analysis.
+Clinical data was used only for downstream association analyses and were not included in MOFA training. Patients with missing values in follow-up time, vital status, or pathological tumor stage were excluded. All remaining patients were retained for survival analysis. I only used event of death and overall survival time in this analysis.
 
 ### 4.2 Omics Data Preprocessing
 All omics preprocessing steps were performed before MOFA training (see `2_omics_data_preprocessing.ipynb`).
