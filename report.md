@@ -275,7 +275,7 @@ To contrast with Factor 2, I performed the same exploratory analysis for Factor 
 
 #### 3.2.1 Modality Contribution and SCNA Structure
 
-Factor 8 shows substantial contribution from the SCNA modality, with a bimodal distribution of SCNA loadings (Figure 7). One peak corresponds to positively weighted features, while the other corresponds to negatively weighted features.
+Factor 8 shows substantial contribution from the proteome modality. SCNA loadings (Figure 7) have several peaks. I analyzed one peak that corresponds t most positively weighted features, and the other corresponds to most negatively weighted features.
 
 <p align="center">
   <img src="plots/factor8_variance_nonzero.png" alt="Variance explained per modality and number of non-zero loadings for Factor 8." />
